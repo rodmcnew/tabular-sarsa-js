@@ -1,11 +1,23 @@
 # tabular-sarsa
 A tabular implementation of the SARSA reinforcement learning algorithm which is related to Q-learning
 
-@TODO show how to use the agent here
-@TODO show how to how to save and load the agent here
+Usage:
+```Javascript
+var sarsaAgent = new tabularSarsa.Agent(numberOfPossibleStates, numberOfPossibleActions);
+var lastReward = null;
 
-Internal Bells and Whistles:
-- Follows an "Epsilon Greedy" policy
-- Uses the first seen reward as the initial condition for each state-action to speed up early learning
-- Records and learns from experience replays to speed up learning
-- Optimized for high speed execution at the cost of some code readability
+function tick() {
+    //Tell the agent about the current environment state and have it choose an action to take
+    var action = sarsaAgent.decide(lastReward, environment.getCurrentState());
+
+    //Tell the environment the agent's action and have it calculate a reward
+    lastReward = environment.takeAction(action);
+}
+```
+
+Internal details beyond basic SARSA:
+- Follows an "Epsilon Greedy" exploration policy
+- Uses the expected next-action reward rather than the actual next-action reward
+- Uses the first seen reward as the Q value for each state-action
+- Records experience replays and learns from them
+- Optimized for high speed execution at the cost of code readability
