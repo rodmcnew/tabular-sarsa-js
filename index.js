@@ -1,13 +1,13 @@
+//@TODO get working with node module system
 export class Agent {
-    constructor(possibleStateCount, possibleActionCount) {
+    constructor(possibleStateCount, possibleActionCount, options) {
         var defaultOptions = {
             discountFactor: 0.9,//gamma
             randomActionProbability: 0.05,//epsilon
             learningRate: 0.1,//alpha
             replaysPerAction: 10,
             replayCountToStore: 5000,
-            actionsBetweenRecordingNewReplays: 25,
-            // tdErrorClamp: 1.0,
+            actionsBetweenRecordingNewReplays: 25
         };
 
         this._replayMemory = [];//@TODO trim this, don't store all
@@ -15,9 +15,7 @@ export class Agent {
 
         this._actionCount = possibleActionCount;
         this._stateCount = possibleStateCount;
-        this._options = Object.assign(defaultOptions/*, options*/);
-
-        this._lastScore = null;
+        this._options = Object.assign(defaultOptions, options);
 
         this._q = new Float64Array(this._stateCount * this._actionCount); //[];//new Array(Math.pow(2, 5 * 3));//@TODO allow state count as arg for higher performance?
         this._initializedQ = new Int8Array(this._stateCount * this._actionCount);
@@ -47,51 +45,6 @@ export class Agent {
     }
 
     /**
-     * The SARSA algorithm with an epsilon greedy policy
-     *
-     * @param state
-     * @param action
-     * @param reward
-     * @param nextState
-     * @private
-     */
-    _learnFromStep(state, action, reward, nextState) {
-        var currentStateActionKey = state * this._actionCount + action;
-        var qOfCurrentStateAction = this._q[currentStateActionKey];
-
-        if (qOfCurrentStateAction === 0.00
-            && this._initializedQ[currentStateActionKey] !== 1
-        ) {
-            //Use first seen reward for a state-action as the initial value to speed up initial learning
-            this._initializedQ[currentStateActionKey] = 1;//1 for true
-            this._q[currentStateActionKey] = reward;
-        }
-
-        var options = this._options;
-        var nextStateKeyPrepend = nextState * this._actionCount;
-        var maxQofNextStateAction = this._q[nextStateKeyPrepend];
-        var sumQofNextStateAction = this._q[nextStateKeyPrepend];
-        for (var i = nextStateKeyPrepend + 1, max = nextStateKeyPrepend + this._actionCount; i < max; i++) {
-            var thisValue = this._q[i];
-            sumQofNextStateAction += thisValue;
-            if (thisValue > maxQofNextStateAction) {
-                maxQofNextStateAction = thisValue;
-            }
-        }
-
-        var qOfNextStateAction = maxQofNextStateAction * this.oneMinusEpsilon
-            + sumQofNextStateAction * this.epsilonDividedByActionCount;
-
-        this._q[currentStateActionKey] = qOfCurrentStateAction +
-            options.learningRate * (reward + options.discountFactor * qOfNextStateAction - qOfCurrentStateAction);
-    }
-
-    /**
-     *
-     * @param {AgentObservation} observation
-     * @return {string} action code
-     */
-    /**
      * @TODO only bother with outputting actino weights if something like config.outputWeights is set
      *
      *
@@ -115,6 +68,7 @@ export class Agent {
             this._actionsTillNextReplayRecording--;
             if (this._actionsTillNextReplayRecording < 1) {
                 this._actionsTillNextReplayRecording = this._options.actionsBetweenRecordingNewReplays;
+                //@TODO improve replay performance by avoiding slice and keep memory size consistant
                 //Trim down the replay memory any time it gets 20% larger than its allowed size
                 if (this._replayMemory.length > this._options.replayCountToStore * 1.2) {
                     this._replayMemory = this._replayMemory.slice(-1 * this._options.replayCountToStore);
@@ -166,5 +120,45 @@ export class Agent {
         // }
 
         return action;
+    }
+
+    /**
+     * The SARSA algorithm with an epsilon greedy policy
+     *
+     * @param state
+     * @param action
+     * @param reward
+     * @param nextState
+     * @private
+     */
+    _learnFromStep(state, action, reward, nextState) {
+        var currentStateActionKey = state * this._actionCount + action;
+        var qOfCurrentStateAction = this._q[currentStateActionKey];
+
+        if (qOfCurrentStateAction === 0.00
+            && this._initializedQ[currentStateActionKey] !== 1
+        ) {
+            //Use first seen reward for a state-action as the initial value to speed up initial learning
+            this._initializedQ[currentStateActionKey] = 1;//1 for true
+            this._q[currentStateActionKey] = reward;
+        }
+
+        var options = this._options;
+        var nextStateKeyPrepend = nextState * this._actionCount;
+        var maxQofNextStateAction = this._q[nextStateKeyPrepend];
+        var sumQofNextStateAction = this._q[nextStateKeyPrepend];
+        for (var i = nextStateKeyPrepend + 1, max = nextStateKeyPrepend + this._actionCount; i < max; i++) {
+            var thisValue = this._q[i];
+            sumQofNextStateAction += thisValue;
+            if (thisValue > maxQofNextStateAction) {
+                maxQofNextStateAction = thisValue;
+            }
+        }
+
+        var qOfNextStateAction = maxQofNextStateAction * this.oneMinusEpsilon
+            + sumQofNextStateAction * this.epsilonDividedByActionCount;
+
+        this._q[currentStateActionKey] = qOfCurrentStateAction +
+            options.learningRate * (reward + options.discountFactor * qOfNextStateAction - qOfCurrentStateAction);
     }
 }
