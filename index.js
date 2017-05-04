@@ -1,4 +1,4 @@
-export class TabularSARSA {
+export class Agent {
     constructor(possibleStateCount, possibleActionCount) {
         var defaultOptions = {
             discountFactor: 0.9,//gamma
