@@ -1,47 +1,31 @@
 //@TODO get working with node module system
 export class Agent {
-    constructor(possibleStateCount, possibleActionCount, options) {
-        var defaultOptions = {
-            discountFactor: 0.9,//gamma
-            randomActionProbability: 0.05,//epsilon
-            learningRate: 0.1,//alpha
-            replaysPerAction: 10,
-            replayCountToStore: 5000,
-            actionsBetweenRecordingNewReplays: 25
-        };
+    constructor(numberOfPossibleStates, numberOfPossibleActions, options) {
+        this._actionCount = numberOfPossibleActions;
+        this._stateCount = numberOfPossibleStates;
 
-        this._replayMemory = [];//@TODO trim this, don't store all
-        this._actionsTillNextReplayRecording = 0;
 
-        this._actionCount = possibleActionCount;
-        this._stateCount = possibleStateCount;
-        this._options = Object.assign(defaultOptions, options);
+        this._options = Object.assign(
+            {   //Default options
+                discountFactor: 0.9,//gamma
+                randomActionProbability: 0.05,//epsilon
+                learningRate: 0.1,//alpha
+                replaysPerAction: 10,
+                replayCountToStore: 5000,
+                actionsBetweenRecordingNewReplays: 25
+            },
+            options
+        );
 
-        this._q = new Float64Array(this._stateCount * this._actionCount); //[];//new Array(Math.pow(2, 5 * 3));//@TODO allow state count as arg for higher performance?
-        this._initializedQ = new Int8Array(this._stateCount * this._actionCount);
+        this._q = new Float64Array(this._stateCount * this._actionCount);//stores the expected reward for a given state and action
+        this._initializedQ = new Int8Array(this._stateCount * this._actionCount);//stores 0 if we haven't seen a reward for this state-action before, 1 if we have
         this._lastActionWeights = new Float64Array(this._actionCount);
-
-        this.oneMinusEpsilon = 1 - this._options.randomActionProbability;//cached calculations to increase performance
-        this.epsilonDividedByActionCount = this._options.randomActionProbability / this._actionCount;//cached calculations to increase performance
+        this._replayMemory = [];
+        this._actionsTillNextReplayRecording = 0;
+        this._oneMinusEpsilon = 1 - this._options.randomActionProbability;//cached calculations to increase performance
+        this._epsilonDividedByActionCount = this._options.randomActionProbability / this._actionCount;//cached calculations to increase performance
 
         this.lastStep = {};
-    }
-
-    fromJson(json) {
-        for (var i = 0, len = this._stateCount * this._actionCount; i < len; i++) {
-            this._q[i] = json.q[i];
-            this._initializedQ[i] = json.initializedQ[i];
-        }
-    }
-
-    toJson() {
-        var q = [];
-        var initializedQ = [];
-        for (var i = 0, len = this._stateCount * this._actionCount; i < len; i++) {
-            q[i] = this._q[i];
-            initializedQ[i] = this._initializedQ[i];
-        }
-        return {q: q, initializedQ: initializedQ};
     }
 
     /**
@@ -81,7 +65,7 @@ export class Agent {
 
 
         var action;
-        let actionWasRandom = false;
+        var actionWasRandom = false;
         if (Math.random() < this._options.randomActionProbability) {
             //@TODO this._lastActionWeights not being set in this branch
             actionWasRandom = true;
@@ -143,7 +127,6 @@ export class Agent {
             this._q[currentStateActionKey] = reward;
         }
 
-        var options = this._options;
         var nextStateKeyPrepend = nextState * this._actionCount;
         var maxQofNextStateAction = this._q[nextStateKeyPrepend];
         var sumQofNextStateAction = this._q[nextStateKeyPrepend];
@@ -155,10 +138,40 @@ export class Agent {
             }
         }
 
-        var qOfNextStateAction = maxQofNextStateAction * this.oneMinusEpsilon
-            + sumQofNextStateAction * this.epsilonDividedByActionCount;
+        this._q[currentStateActionKey] += this._options.learningRate * (
+                reward
+                + this._options.discountFactor * (
+                    maxQofNextStateAction * this._oneMinusEpsilon +
+                    sumQofNextStateAction * this._epsilonDividedByActionCount
+                )
+                - qOfCurrentStateAction
+            );
+    }
 
-        this._q[currentStateActionKey] = qOfCurrentStateAction +
-            options.learningRate * (reward + options.discountFactor * qOfNextStateAction - qOfCurrentStateAction);
+    /**
+     * Saves everything the agent has learned to a JSON-serializable object and returns it
+     *
+     * @returns {{q: Array, initializedQ: Array}}
+     */
+    toJson() {
+        var q = [];
+        var initializedQ = [];
+        for (var i = 0, len = this._stateCount * this._actionCount; i < len; i++) {
+            q[i] = this._q[i];
+            initializedQ[i] = this._initializedQ[i];
+        }
+        return {q: q, initializedQ: initializedQ};
+    }
+
+    /**
+     * Loads a previously saved agent
+     *
+     * @param {{q: Array, initializedQ: Array}} json
+     */
+    fromJson(json) {
+        for (var i = 0, len = this._stateCount * this._actionCount; i < len; i++) {
+            this._q[i] = json.q[i];
+            this._initializedQ[i] = json.initializedQ[i];
+        }
     }
 }
