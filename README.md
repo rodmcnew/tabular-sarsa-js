@@ -6,6 +6,6 @@ A tabular implementation of the SARSA reinforcement learning algorithm which is 
 
 Internal Bells and Whistles:
 - Follows an "Epsilon Greedy" policy
-- Uses the first seen reward as the "initial condition" for each state to speed up early learning
-- Records and learns from experience replays
+- Uses the first seen reward as the initial condition for each state-action to speed up early learning
+- Records and learns from experience replays to speed up learning
 - Optimized for high speed execution at the cost of some code readability
