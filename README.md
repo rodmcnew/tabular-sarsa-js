@@ -1,5 +1,5 @@
 # Tabular SARSA
-A tabular implementation of the SARSA reinforcement learning algorithm. Q values are stored in a table and updated every time the agent acts.
+A tabular implementation of the SARSA reinforcement learning algorithm. This agent works by learning how to predict the expected value of each possible action for every possible state.
 
 More info about SARSA: https://en.wikipedia.org/wiki/State-Action-Reward-State-Action
 
