@@ -59,14 +59,14 @@ class Agent {
          */
         if (lastReward !== null && this._options.learningEnabled === true) {
             //Learn from the current step
-            this._learnFromStateActionRewardState(this._lastState, this._lastAction, lastReward, state);
+            this._learn(this._lastState, this._lastAction, lastReward, state);
 
             //Learn from replays of previous steps
             if (this._replayMemory.length > this._options.replaysToPlayPerAction) {
                 for (var replayTime = 0; replayTime < this._options.replaysToPlayPerAction; replayTime++) {
                     var replayI = Math.floor(Math.random() * this._replayMemory.length);
                     var replay = this._replayMemory[replayI];
-                    this._learnFromStateActionRewardState(replay[0], replay[1], replay[2], replay[3]);
+                    this._learn(replay[0], replay[1], replay[2], replay[3]);
                 }
             }
 
@@ -125,18 +125,18 @@ class Agent {
      * @param {int} nextState
      * @private
      */
-    _learnFromStateActionRewardState(state, action, reward, nextState) {
+    _learn(state, action, reward, nextState) {
         var currentStateActionKey = state * this._actionCount + action;
         var qOfCurrentStateAction = this._q[currentStateActionKey];
 
         if (qOfCurrentStateAction === 0.00
             && this._initializedQ[currentStateActionKey] !== 1
         ) {
-            //Use first seen reward for a state-action as the initial value to speed up initial learning
-            this._initializedQ[currentStateActionKey] = 1;//1 for true
+            //Use first seen reward for a state-action as the initial Q value to speed up initial learning
             this._q[currentStateActionKey] = reward;
+            this._initializedQ[currentStateActionKey] = 1;//1 for true
         }
-        
+
         //Calculate sumQofNextStateActions and maxQofNextStateAction which are used to estimate future rewards
         var nextStateKeyPrepend = nextState * this._actionCount;
         var maxQofNextStateAction = this._q[nextStateKeyPrepend];
@@ -153,8 +153,8 @@ class Agent {
         this._q[currentStateActionKey] += this._options.learningRate * (
                 reward
                 + this._options.discountFactor * (
-                    maxQofNextStateAction * this._oneMinusEpsilon +
-                    sumQofNextStateActions * this._epsilonDividedByActionCount
+                    maxQofNextStateAction * this._oneMinusEpsilon
+                    + sumQofNextStateActions * this._epsilonDividedByActionCount
                 )
                 - qOfCurrentStateAction
             );
