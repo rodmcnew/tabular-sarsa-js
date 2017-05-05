@@ -136,7 +136,8 @@ class Agent {
             this._initializedQ[currentStateActionKey] = 1;//1 for true
             this._q[currentStateActionKey] = reward;
         }
-
+        
+        //Calculate sumQofNextStateActions and maxQofNextStateAction which are used to estimate future rewards
         var nextStateKeyPrepend = nextState * this._actionCount;
         var maxQofNextStateAction = this._q[nextStateKeyPrepend];
         var sumQofNextStateActions = this._q[nextStateKeyPrepend];
