@@ -172,7 +172,7 @@ class Agent {
     }
 
     /**
-     * Returns some additional info about the last action that was taking. Useful for graphs and reports
+     * Returns some additional info about the last action that was taken. Useful for graphs and reports
      *
      * @returns {{action: (number|*), weights: Float64Array, wasRandomlyChosen: boolean}}
      */
