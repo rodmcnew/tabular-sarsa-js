@@ -1,5 +1,5 @@
 # Tabular SARSA
-A tabular implementation of the SARSA reinforcement learning algorithm. This agent works by learning how to predict the expected value of each possible action for every possible state.
+A tabular implementation of the SARSA reinforcement learning algorithm. This agent works by learning how to predict the expected value of every possible action in every possible state.
 
 More info about SARSA: https://en.wikipedia.org/wiki/State-Action-Reward-State-Action
 
