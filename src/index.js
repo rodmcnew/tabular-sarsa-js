@@ -152,7 +152,7 @@ class Agent {
         //Update the Q table by using the SARSA algorithm with an "epsilon greedy" policy
         this._q[currentStateActionKey] += this._options.learningRate * (
                 reward
-                + this._options.discountFactor * ( //Discounted future reward
+                + this._options.discountFactor * ( //Discounted future expected reward
                     maxQofNextStateAction * this._oneMinusEpsilon
                     + sumQofNextStateActions * this._epsilonDividedByActionCount
                 )
