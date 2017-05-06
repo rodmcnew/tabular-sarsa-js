@@ -22,7 +22,7 @@ function tick() {
 }
 ```
 
-Saving and Loading Agents:
+Saving trained agents for later:
 ```Javascript
 //Saving an agent
 var agentA = new tabularSarsa.Agent(100, 4);
