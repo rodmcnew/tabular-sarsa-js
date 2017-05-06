@@ -23,8 +23,8 @@ function tick() {
      */
     var action = agent.decide(
         lastReward,
-         environment.getCurrentState()
-         );
+        environment.getCurrentState()
+    );
 
     /*
      * Take the action inside the environment find out how 
