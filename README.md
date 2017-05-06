@@ -1,5 +1,5 @@
 # Tabular Expected SARSA Agent
-This contains an agent that learns to maximaize reward through reinforcement learning. The agent works by building a table that can predict the expected value of every possible action from every possible state. Exploration is accomplish through an epsilon greedy policy.
+This contains an agent that learns to maximize reward through reinforcement learning. The agent works by building a table that can predict the expected value of every possible action from every possible state. Exploration is accomplished by following an epsilon greedy policy.
 
 Because this uses table-based Q function, it only works in environments with a discrete set of states and actions. You must be able to convert all states and actions to integers to use this agent.
 
@@ -22,9 +22,35 @@ function tick() {
 }
 ```
 
-Optimizations beyond plain SARSA:
-- Uses "Expected SARSA" rather than plain SARSA to speed up learning
-- Uses the first seen reward as the initial Q value for each state-action to speed up learning
+Saving and Loading Agents:
+```Javascript
+//Saving an agent
+var agentA = new tabularSarsa.Agent(100, 4);
+var savedData = agentA.saveToJson();
+
+//Loading an agent
+var agentB = new tabularSarsa.Agent(100, 4);
+agentB.loadFromJson(savedData);
+```
+Extra options:
+```Javascript
+//Saving an agent
+var agent = new tabularSarsa.Agent(
+    100,//Number of possible states
+    4,//Number of possible actions
+    {
+        learningEnabled: true, //set to false to disable all learning for higher execution speeds
+        learningRate: 0.1,//alpha - how much new experiences overwrite previous ones
+        explorationProbability: 0.05,//epsilon - the probability of taking random actions in the Epsilon Greedy policy
+        discountFactor: 0.9,//discountFactor - future rewards are multiplied by this
+    }
+);
+
+```
+
+Optimizations beyond plain SARSA that speed up learning:
+- Uses "Expected SARSA" rather than plain SARSA
+- Uses the first seen reward for each state-action as the initial Q value
  
 More info about the Expected-SARSA algorithm:
 http://www.cs.ox.ac.uk/people/shimon.whiteson/pubs/vanseijenadprl09.pdf
