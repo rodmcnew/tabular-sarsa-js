@@ -1,7 +1,7 @@
 # Tabular Expected SARSA Agent
 This contains an agent that learns to maximize reward through reinforcement learning. The agent works by building a table that can predict the expected value of every possible action from every possible state. Exploration is accomplished by following an epsilon greedy policy.
 
-Because this uses table-based Q function, it only works in environments with a discrete set of states and actions. You must be able to convert all states and actions to integers to use this agent.
+Because this uses a table-based Q function, it only works in environments with a discrete set of states and actions. You must be able to convert all states and actions to integers to use this agent.
 
 Installation:
 ```

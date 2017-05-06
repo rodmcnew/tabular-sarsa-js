@@ -1,6 +1,6 @@
 {
   "name": "tabular-sarsa",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A tabular implementation of the SARSA reinforcement learning algorithm which is related to Q-learning",
   "main": "src/index.js",
   "scripts": {
