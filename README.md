@@ -26,11 +26,11 @@ Saving trained agents for later:
 ```Javascript
 //Saving an agent
 var agentA = new tabularSarsa.Agent(100, 4);
-var savedData = agentA.saveToJson();
+var savedAgentData = agentA.saveToJson();
 
 //Loading an agent
 var agentB = new tabularSarsa.Agent(100, 4);
-agentB.loadFromJson(savedData);
+agentB.loadFromJson(savedAgentData);
 ```
 Extra options:
 ```Javascript
