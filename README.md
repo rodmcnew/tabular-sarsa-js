@@ -18,8 +18,8 @@ var lastReward = null;
 
 function tick() {
     /*
-     * Tell the agent about the current environment state and  have
-     * it choose an action to take
+     * Tell the agent about the current environment state and
+     * have it choose an action to take.
      */
     var action = agent.decide(
         lastReward,
@@ -27,8 +27,8 @@ function tick() {
          );
 
     /*
-     * Take the action inside the environment find out how rewarding
-     * the action was
+     * Take the action inside the environment find out how 
+     * rewarding the action was.
      */
     lastReward = environment.takeAction(action);
 }
