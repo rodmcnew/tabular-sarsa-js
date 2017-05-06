@@ -34,7 +34,6 @@ agentB.loadFromJson(savedAgentData);
 ```
 Extra options:
 ```Javascript
-//Saving an agent
 var agent = new tabularSarsa.Agent(
     100,//Number of possible states
     4,//Number of possible actions
