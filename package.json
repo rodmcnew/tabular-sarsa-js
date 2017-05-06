@@ -1,6 +1,6 @@
 {
   "name": "tabular-sarsa",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "A tabular implementation of the SARSA reinforcement learning algorithm which is related to Q-learning",
   "main": "src/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/rodmcnew/tabular-sarsa.git"
+    "url": "git+ssh://git@github.com/rodmcnew/tabular-sarsa-js.git"
   },
   "keywords": [
     "A",

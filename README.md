@@ -1,7 +1,12 @@
-# Tabular SARSA
-This contains an agent with a tabular implementation of the SARSA reinforcement learning algorithm. This agent works by building a table that can predict the expected value of every possible action in every possible state.
+# Tabular Expected SARSA Agent
+This contains an agent that learns to maximaize reward through reinforcement learning. The agent works by building a table that can predict the expected value of every possible action from every possible state. Exploration is accomplish through an epsilon greedy policy.
 
-More info about SARSA: https://en.wikipedia.org/wiki/State-Action-Reward-State-Action
+Because this uses table-based Q function, it only works in environments with a discrete set of states and actions. You must be able to convert all states and actions to integers to use this agent.
+
+Installation:
+```
+npm install tabular-sarsa
+```
 
 Usage:
 ```Javascript
@@ -17,9 +22,9 @@ function tick() {
 }
 ```
 
-Internal details beyond basic SARSA:
-- Follows an "Epsilon Greedy" exploration policy
-- Uses the expected next-action reward rather than the actual next-action reward
-- Uses the first seen reward as the Q value for each state-action
-- Records experience replays and learns from them
-- Optimized for high speed execution at the cost of code readability
+Optimizations beyond plain SARSA:
+- Uses "Expected SARSA" rather than plain SARSA to speed up learning
+- Uses the first seen reward as the initial Q value for each state-action to speed up learning
+ 
+More info about the Expected-SARSA algorithm:
+http://www.cs.ox.ac.uk/people/shimon.whiteson/pubs/vanseijenadprl09.pdf
