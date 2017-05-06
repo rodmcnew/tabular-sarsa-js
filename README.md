@@ -10,12 +10,12 @@ npm install tabular-sarsa
 
 Usage:
 ```Javascript
-var sarsaAgent = new tabularSarsa.Agent(numberOfPossibleStates, numberOfPossibleActions);
+var agent = new tabularSarsa.Agent(numberOfPossibleStates, numberOfPossibleActions);
 var lastReward = null;
 
 function tick() {
     //Tell the agent about the current environment state and have it choose an action to take
-    var action = sarsaAgent.decide(lastReward, environment.getCurrentState());
+    var action = agent.decide(lastReward, environment.getCurrentState());
 
     //Tell the environment the agent's action and have it calculate a reward
     lastReward = environment.takeAction(action);
