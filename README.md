@@ -39,7 +39,7 @@ var agent = new tabularSarsa.Agent(
     100,//Number of possible states
     4,//Number of possible actions
     {
-        learningEnabled: true, //set to false to disable all learning for higher execution speeds
+        learningEnabled: true,//set to false to disable all learning for higher execution speeds
         learningRate: 0.1,//alpha - how much new experiences overwrite previous ones
         explorationProbability: 0.05,//epsilon - the probability of taking random actions in the Epsilon Greedy policy
         discountFactor: 0.9,//discountFactor - future rewards are multiplied by this
