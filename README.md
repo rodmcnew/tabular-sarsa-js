@@ -6,12 +6,12 @@ Because this uses a table-based Q function, it only works in environments with a
 #### Demo:
 Select the "Tabular Sarsa" agent here: http://rodmcnew.github.io/reinforcement-learning-agent-tester-js/ 
 
-Installation:
+#### Installation:
 ```
 npm install tabular-sarsa
 ```
 
-Usage:
+#### Usage:
 ```Javascript
 var agent = new tabularSarsa.Agent(
     numberOfPossibleStates,
@@ -37,7 +37,7 @@ function tick() {
 }
 ```
 
-Saving trained agents for later:
+#### Saving trained agents for later:
 ```Javascript
 //Saving an agent
 var agentA = new tabularSarsa.Agent(100, 4);
@@ -47,7 +47,7 @@ var savedAgentData = agentA.saveToJson();
 var agentB = new tabularSarsa.Agent(100, 4);
 agentB.loadFromJson(savedAgentData);
 ```
-Extra options:
+#### Extra options:
 ```Javascript
 var agent = new tabularSarsa.Agent(
     100,//Number of possible states
@@ -62,7 +62,7 @@ var agent = new tabularSarsa.Agent(
 
 ```
 
-Optimizations beyond plain SARSA that speed up learning:
+#### Optimizations beyond plain SARSA that speed up learning:
 - Uses "Expected SARSA" rather than plain SARSA
 - Uses the first seen reward for each state-action as the initial Q value
  
