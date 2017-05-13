@@ -3,10 +3,8 @@ This contains an agent that learns to maximize reward through reinforcement lear
 
 Because this uses a table-based Q function, it only works in environments with a discrete set of states and actions. You must be able to convert all states and actions to integers to use this agent.
 
-Demo:
-```
+*Demo*:
 Select the "Tabular Sarsa" agent here: http://rodmcnew.github.io/reinforcement-learning-agent-tester-js/ 
-```
 
 Installation:
 ```
