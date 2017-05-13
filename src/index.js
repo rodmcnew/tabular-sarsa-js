@@ -1,41 +1,43 @@
-class Agent {
-    /**
-     * @param {int} numberOfPossibleStates
-     * @param {int} numberOfPossibleActions
-     * @param {Object} [options]
-     */
-    constructor(numberOfPossibleStates, numberOfPossibleActions, options = {}) {
-        this._actionCount = numberOfPossibleActions;
-        this._stateCount = numberOfPossibleStates;
-
-        this._options = Object.assign(
-            {   //Default options
-                learningEnabled: true, //set to false to disable all learning for higher execution speeds
-                learningRate: 0.1,//alpha - how much new experiences overwrite previous ones
-                explorationProbability: 0.05,//epsilon - the probability of taking random actions in the Epsilon Greedy policy
-                discountFactor: 0.9,//discountFactor - future rewards are multiplied by this
-            },
-            options
-        );
-
-        //Stores the expected reward for a given state and action. Is a 2D table stored as a flat array for higher speed
-        this._q = new Float64Array(this._stateCount * this._actionCount);
-
-        //Stores 0 if we haven't seen a reward for this state-action before, stores 1 if we have
-        this._initializedQ = new Int8Array(this._stateCount * this._actionCount);
-
-        //Some values used in the SARSA algorithm. We pre-calculate them here for higher speed
-        this._oneMinusEpsilon = 1 - this._options.explorationProbability;
-        this._epsilonDividedByActionCount = this._options.explorationProbability / this._actionCount;
-
-        //Properties used to store statistics about the last action for reporting reasons
-        this._qOfLastState = new Float64Array(this._actionCount);
-        this._lastActionWasRandom = false;
-
-        //The last state and action we saw
-        this._lastState = 0;
-        this._lastAction = 0;
+/**
+ * @param {int} numberOfPossibleStates
+ * @param {int} numberOfPossibleActions
+ * @param {Object} [options]
+ */
+module.exports.Agent = function (numberOfPossibleStates, numberOfPossibleActions, options) {
+    if (typeof options == 'undefined') {
+        options = {};
     }
+
+    this._actionCount = numberOfPossibleActions;
+    this._stateCount = numberOfPossibleStates;
+
+    this._options = Object.assign(
+        {   //Default options
+            learningEnabled: true, //set to false to disable all learning for higher execution speeds
+            learningRate: 0.1,//alpha - how much new experiences overwrite previous ones
+            explorationProbability: 0.05,//epsilon - the probability of taking random actions in the Epsilon Greedy policy
+            discountFactor: 0.9,//discountFactor - future rewards are multiplied by this
+        },
+        options
+    );
+
+    //Stores the expected reward for a given state and action. Is a 2D table stored as a flat array for higher speed
+    this._q = new Float64Array(this._stateCount * this._actionCount);
+
+    //Stores 0 if we haven't seen a reward for this state-action before, stores 1 if we have
+    this._initializedQ = new Int8Array(this._stateCount * this._actionCount);
+
+    //Some values used in the SARSA algorithm. We pre-calculate them here for higher speed
+    this._oneMinusEpsilon = 1 - this._options.explorationProbability;
+    this._epsilonDividedByActionCount = this._options.explorationProbability / this._actionCount;
+
+    //Properties used to store statistics about the last action for reporting reasons
+    this._qOfLastState = new Float64Array(this._actionCount);
+    this._lastActionWasRandom = false;
+
+    //The last state and action we saw
+    this._lastState = 0;
+    this._lastAction = 0;
 
     /**
      * Learn from the last reward, decide on the next action to take, and return the next action
@@ -44,7 +46,7 @@ class Agent {
      * @param {int} state
      * @returns {int} the action that the agent decided to take
      */
-    decide(lastReward, state) {
+    this.decide = function (lastReward, state) {
         if (lastReward !== null && this._options.learningEnabled === true) {
             //Learn from the current step
             this._learnFromStateActionRewardState(this._lastState, this._lastAction, lastReward, state);
@@ -88,7 +90,7 @@ class Agent {
      * @param {int} nextState
      * @private
      */
-    _learnFromStateActionRewardState(state, action, reward, nextState) {
+    this._learnFromStateActionRewardState = function (state, action, reward, nextState) {
         var currentStateActionKey = state * this._actionCount + action;
         var qOfCurrentStateAction = this._q[currentStateActionKey];
 
@@ -128,7 +130,7 @@ class Agent {
      *
      * @returns {{action: (number|*), weights: Float64Array, wasRandomlyChosen: boolean}}
      */
-    getLastActionStats() {
+    this.getLastActionStats = function () {
         return {
             action: this._lastAction,
             wasRandomlyChosen: this._lastActionWasRandom,
@@ -141,7 +143,7 @@ class Agent {
      *
      * @returns {{q: Array, initializedQ: Array}}
      */
-    saveToJson() {
+    this.saveToJson = function () {
         var q = [];
         var initializedQ = [];
         for (var i = 0, len = this._stateCount * this._actionCount; i < len; i++) {
@@ -156,7 +158,7 @@ class Agent {
      *
      * @param {{q: Array, initializedQ: Array}} json
      */
-    loadFromJson(json) {
+    this.loadFromJson = function (json) {
         for (var i = 0, len = this._stateCount * this._actionCount; i < len; i++) {
             this._q[i] = json.q[i];
             this._initializedQ[i] = json.initializedQ[i];
@@ -164,4 +166,3 @@ class Agent {
     }
 }
 
-module.exports.Agent = Agent;
